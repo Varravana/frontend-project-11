@@ -12,3 +12,6 @@ build:
 
 test:
 	echo no tests
+
+vercel:
+	vercel --prod
