@@ -1,16 +1,12 @@
+:root {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+}
+
 .bg-gradient {
 background: linear-gradient(45deg, #0a22c8ff 0%, #6d0397ff 40%, #b203d3ff 90%);
 }
 
-.p-5 {
-  padding: 3rem;
-}
 
-.text-white {
-  color: #ffffffff;
-}
 
-.mx-auto {
-  margin-right: auto;
-  margin-left: auto;
-}
+
+

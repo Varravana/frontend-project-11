@@ -15,6 +15,9 @@
     "vite": "^7.1.2"
   },
   "dependencies": {
-    "bootstrap": "^5.3.7"
+    "bootstrap": "^5.3.7",
+    "lodash": "^4.17.21",
+    "on-change": "^5.0.1",
+    "yup": "^1.7.0"
   }
 }
