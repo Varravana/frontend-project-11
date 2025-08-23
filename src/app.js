@@ -3,21 +3,13 @@ import _ from 'lodash'
 import onChange from 'on-change'
 import initView from './view.js'
 
-const schema = yup.object().shape({
-    value: yup.string().url('Ссылка должна быть валидным URL').required('Это обязательное поле'),
-})
 
-const validate = (fields) => {
-    try {
-        schema.validateSync(fields, { abortEarly: false })
-        return {}
-    }
-    catch (e) {
-        return _.keyBy(e.inner, 'path')
-    }
-}
-
-
+const duplicateUrlCheck = (list, value) => {
+const result =  _.includes(list, value)
+if(result === false) {
+    return true
+} else {return false}
+};
 
 const app = () => {
 
@@ -27,8 +19,25 @@ const app = () => {
                 value: '',
             },
             error: {}
-        }
+        },
+        rssList: []
     }
+
+    const schema = yup.object().shape({
+    value: yup
+    .string()
+    .url('Ссылка должна быть валидным URL')
+    .test("Unique", "Такой URL уже добавлен", (value) => {
+      return duplicateUrlCheck(state.rssList, value);
+    })
+    .required('Это обязательное поле'),
+})
+
+const validate = (fields) => {
+  return schema.validate(fields, { abortEarly: false })
+    .then(() => ({}))  
+    .catch(e => _.keyBy(e.inner, 'path'));  
+}
 
 const elements = {
     input: document.getElementById('url-input'),
@@ -42,15 +51,26 @@ const watchState = onChange(state, initView(elements))
 elements.input.addEventListener('input', (e) => {
 const value = e.target.value
 watchState.form.field.value = value
-//const error = validate(watchState.form.field)
-//watchState.form.error = error
+
 })
 
-elements.form.addEventListener('submit', async (e) => {
-    e.preventDefault()
-    const error = validate(watchState.form.field)
-    watchState.form.error = error
-})
+elements.form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  watchState.form.error = {};
+
+  validate(watchState.form.field) 
+    .then((error) => {
+      watchState.form.error = error;
+      if (Object.keys(error).length === 0) {
+        state.rssList.push(watchState.form.field.value);
+        elements.input.value = '';
+      }
+    })
+    .catch((error) => {
+    
+      console.error('Unexpected validation error:', error);
+    });
+});
 
 }
 export { app }
