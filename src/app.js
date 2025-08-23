@@ -14,7 +14,7 @@ const duplicateUrlCheck = (list, value) => {
 };
 
 const app = () => {
-
+    //переводчик
     const i18n = i18next.createInstance();
     i18n.init({
         lng: 'ru',
@@ -28,39 +28,49 @@ const app = () => {
         console.error('Ошибка инициализации:', error);
     });
 
+    //статус
     const state = {
         form: {
             field: {
                 value: '',
             },
-            error: {}
+            error: {},
+            isValid: false
         },
-        rssList: []
+        processState: {
+            status: '', //filling, sending, error, success
+            error: []
+        },
+        posts: [],
+        feeds: [],
     }
- yup.setLocale({
-    string: {
-      required: `${i18n.t('form.errors.validation.required')}`,
-      url: `${i18n.t('form.errors.validation.url')}`,
-      //unique: `${i18n.t('form.errors.validation.unique')}`
-    }
-})
+
+    // валидация формы
+    yup.setLocale({
+        string: {
+            required: `${i18n.t('form.errors.validation.required')}`,
+            url: `${i18n.t('form.errors.validation.url')}`,
+            //unique: `${i18n.t('form.errors.validation.unique')}`
+        }
+    })
 
     const schema = yup.object().shape({
         value: yup
             .string()
             .url()
             .test("unique", `${i18n.t('form.errors.validation.unique')}`, (value) => {
-                return duplicateUrlCheck(state.rssList, value);
+                return duplicateUrlCheck(watchState.posts, value);
             })
             .required(),
     })
 
-    const validate = (fields) => {
+    const validateForm = (fields) => {
         return schema.validate(fields, { abortEarly: false })
             .then(() => ({}))
             .catch(e => _.keyBy(e.inner, 'path'));
     }
 
+    //элементы
     const elements = {
         input: document.getElementById('url-input'),
         submit: document.querySelector('[type="submit"]'),
@@ -70,28 +80,43 @@ const app = () => {
 
     const watchState = onChange(state, initView(elements))
 
+    //события
     elements.input.addEventListener('input', (e) => {
+        watchState.processState.status = 'filling'
         const value = e.target.value
         watchState.form.field.value = value
-
     })
 
     elements.form.addEventListener('submit', (e) => {
         e.preventDefault();
-        watchState.form.error = {};
+        watchState.processState.status = 'sending'
+        watchState.form.isValid = false
 
-        validate(watchState.form.field)
+        validateForm(watchState.form.field)
             .then((error) => {
                 watchState.form.error = error;
                 if (Object.keys(error).length === 0) {
-                    state.rssList.push(watchState.form.field.value);
-                    elements.input.value = '';
+                    watchState.form.isValid = true
+                } else {
+                    watchState.form.isValid = false
                 }
             })
-            .catch((error) => {
+            .then(() => {
+                if (watchState.form.isValid === true) {
+                    watchState.posts.push(watchState.form.field.value);
+                    elements.input.value = '';
+                    watchState.processState.status = 'success'
+                } else {
+                    watchState.processState.status = 'filling'
+                }
 
+            }
+            )
+            .catch((error) => {
                 console.error('Unexpected validation error:', error);
             });
+
+
     });
 
 }
