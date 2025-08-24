@@ -1,19 +1,22 @@
 
 const renderError = (error, elements) => {
 
-    const errorMessage = error.value !== undefined ? error.value.message : error.value
-    if (errorMessage) {
-        elements.input.classList.add('is-invalid')
-    } else {
-        elements.input.classList.remove('is-invalid')
-    }
+    const errorMessage = error ? error : undefined
 
-    if (elements.feedback.textContent !== '') {
+       if (errorMessage) {
+        elements.input.classList.add('is-invalid')
+        elements.feedback.textContent = ''
+        elements.feedback.textContent = errorMessage
+    } else if (!errorMessage){
+        elements.input.classList.remove('is-invalid')
         elements.feedback.textContent = ''
     }
-    elements.feedback.textContent = errorMessage
+    
 }
 
+const renderInput = (elements) => {
+
+}
 const renderProcessState = (elements, process) => {
     switch (process) {
         case 'filling':
@@ -40,7 +43,7 @@ const renderProcessState = (elements, process) => {
     }
 }
 
-const initView = elements => (path, value) => {
+const initView = (elements) => (path, value) => {
     switch (path) {
         case 'form.error':
             renderError(value, elements)
