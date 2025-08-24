@@ -78,17 +78,18 @@ const app = () => {
     // загрузка данных
 
     const loadData = (url) => {
-        watchState.processState.status = 'sending'
+        //watchState.processState.status = 'sending'
         watchState.feeds.push(url);
         watchState.form.field.value = ''
         axios.get(url)
         .then((data) => {
+            console.log('boom')
             const result = parser(data)
             watchState.processState.status = 'success'
             return result
         })
         .catch(error => {
-            console.log(error)
+            console.log('error')
             watchState.processState.status = 'error'
             watchState.processState.error = error
         })
@@ -100,7 +101,9 @@ const app = () => {
         input: document.getElementById('url-input'),
         submit: document.querySelector('[type="submit"]'),
         feedback: document.querySelector('.feedback'),
-        form: document.querySelector('.rss-form')
+        form: document.querySelector('.rss-form'),
+        posts: document.querySelector('.posts'),
+        feeds: document.querySelector('.feeds')
     }
 
     const watchState = onChange(state, initView(elements))
@@ -124,6 +127,7 @@ const app = () => {
                 } else {
                     watchState.form.isValid = true
                     elements.input.value = ''
+                    watchState.processState.status = 'sending'
                     loadData(url)
 
                 }
