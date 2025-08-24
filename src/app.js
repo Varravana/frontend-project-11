@@ -84,14 +84,14 @@ const app = () => {
         axios.get(url)
         .then((data) => {
             console.log('boom')
-            const result = parser(data)
-            watchState.processState.status = 'success'
-            return result
+            //const result = parser(data)
+            //watchState.processState.status = 'success'
+            //return result
         })
         .catch(error => {
             console.log('error')
-            watchState.processState.status = 'error'
-            watchState.processState.error = error
+            //watchState.processState.status = 'error'
+            //watchState.processState.error = error
         })
         
         
