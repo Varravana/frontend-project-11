@@ -5,6 +5,7 @@ import initView from './view.js'
 import i18next from 'i18next'
 import resources from './locales/index';
 import axios from 'axios';
+import parser from './parser.js'
 
 
 const duplicateUrlCheck = (list, value) => {
@@ -79,11 +80,12 @@ const app = () => {
     const loadData = (url) => {
         watchState.processState.status = 'sending'
         watchState.feeds.push(url);
-        //watchState.form.field.value = ''
+        watchState.form.field.value = ''
         axios.get(url)
         .then((data) => {
-            console.log(data)
+            const result = parser(data)
             watchState.processState.status = 'success'
+            return result
         })
         .catch(error => {
             console.log(error)
