@@ -9,7 +9,8 @@ import parser from './parser.js'
 
 
 const duplicateUrlCheck = (list, value) => {
-    const result = _.includes(list, value)
+    const linksList = list.map((item) => { item.link })
+    const result = _.includes(linksList, value)
     if (result === false) {
         return true
     } else { return false }
@@ -44,11 +45,12 @@ const app = () => {
             error: []
         },
         posts: {
-            alPosts: [], //{id, text}
+            allPosts: [], //{id, text}
             curentPost: '', //id текущий пост
             seenPosts: [] //просмотренные посты id уникальные const set = new Set()
         },
         feeds: [],
+        links: []
     }
 
     // валидация формы
@@ -78,23 +80,25 @@ const app = () => {
     // загрузка данных
 
     const loadData = (url) => {
-        //watchState.processState.status = 'sending'
-        watchState.feeds.push(url);
+        watchState.processState.status = 'sending'
         watchState.form.field.value = ''
-        axios.get(url)
-        .then((data) => {
-            console.log('boom')
-            //const result = parser(data)
-            //watchState.processState.status = 'success'
-            //return result
-        })
-        .catch(error => {
-            console.log('error')
-            //watchState.processState.status = 'error'
-            //watchState.processState.error = error
-        })
-        
-        
+        axios.get(`https://allorigins.hexlet.app/raw?url=${encodeURIComponent(url)}`)
+            .then((response) => {
+                console.log('boom1')
+                const htmlData = response.data;
+                const result = parser(htmlData)
+                watchState.processState.status = 'success'
+                watchState.links.push(url)
+                watchState.feeds.push(result.feed)
+                watchState.posts.allPosts = [...watchState.posts.allPosts, ...result.items]
+            })
+            .catch(error => {
+                console.log('error loadData')
+                watchState.processState.status = 'error'
+                watchState.processState.error = error
+            })
+
+
     }
     //элементы
     const elements = {
