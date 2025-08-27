@@ -5,7 +5,14 @@ const parser = (data) => {
   const doc = parser.parseFromString(data, "text/html")
   const feedTitle = doc.title
   const cleanTitle = feedTitle.replace(/<!\[CDATA\[(.*?)\]\]>/gs, '$1')
-  const feedDescription = doc.querySelector('channel > description').innerHTML;
+  const feedDescriptionBlock = doc.querySelector('channel > description')
+  let feedDescription = ''
+  if(!feedDescriptionBlock ) {
+feedDescription = ''
+  } else {
+feedDescription = feedDescriptionBlock.innerHTML? feedDescriptionBlock.innerHTML : feedDescriptionBlock.textContent
+  }
+
   const cleanDescription = feedDescription.replace('\x3C!--[CDATA[', '').replace(']]-->', '');
   const feedId = _.uniqueId()
   const feedInfo = { id: feedId, title: cleanTitle, description: cleanDescription }

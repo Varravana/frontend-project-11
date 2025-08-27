@@ -9,8 +9,7 @@ import parser from './parser.js'
 
 
 const duplicateUrlCheck = (list, value) => {
-    const linksList = list.map((item) => { item.link })
-    const result = _.includes(linksList, value)
+    const result = _.includes(list, value)
     if (result === false) {
         return true
     } else { return false }
@@ -42,10 +41,10 @@ const app = () => {
         },
         processState: {
             status: '', //filling, sending, error, success
-            error: []
+            error: null
         },
         posts: {
-            allPosts: [], //{id, text}
+            allPosts: [], //{feedId, id, title, link, description}
             curentPost: '', //id текущий пост
             seenPosts: [] //просмотренные посты id уникальные const set = new Set()
         },
@@ -67,7 +66,7 @@ const app = () => {
             .string()
             .url()
             .test("unique", `${i18n.t('form.errors.validation.unique')}`, (value) => {
-                return duplicateUrlCheck(watchState.feeds, value);
+                return duplicateUrlCheck(watchState.links, value);
             })
             .required(),
     })
@@ -84,18 +83,18 @@ const app = () => {
         watchState.form.field.value = ''
         axios.get(`https://allorigins.hexlet.app/raw?url=${encodeURIComponent(url)}`)
             .then((response) => {
-                console.log('boom1')
+                watchState.processState.error = null
                 const htmlData = response.data;
                 const result = parser(htmlData)
                 watchState.processState.status = 'success'
-                watchState.links.push(url)
                 watchState.feeds.push(result.feed)
                 watchState.posts.allPosts = [...watchState.posts.allPosts, ...result.items]
             })
             .catch(error => {
-                console.log('error loadData')
+                console.log(error)
                 watchState.processState.status = 'error'
-                watchState.processState.error = error
+                watchState.processState.error = `${i18n.t('loadResult.networkError')}`
+                console.log(watchState.processState.error)
             })
 
 
@@ -110,7 +109,7 @@ const app = () => {
         feeds: document.querySelector('.feeds')
     }
 
-    const watchState = onChange(state, initView(elements))
+    const watchState = onChange(state, initView(elements, i18n))
 
     //события
     elements.input.addEventListener('input', (e) => {
@@ -129,6 +128,7 @@ const app = () => {
                     watchState.form.isValid = false
                     watchState.processState.status = 'filling'
                 } else {
+                    watchState.links.push(url)
                     watchState.form.isValid = true
                     elements.input.value = ''
                     watchState.processState.status = 'sending'

@@ -14,6 +14,18 @@ export default {
                     unique: 'Такой URL уже добавлен'
                 }
             }
+        },
+        loadResult: {
+            networkError: "Ошибка сети"
+        },
+        content: {
+            posts: {
+                head: 'Посты',
+                buttons: 'Просмотр'
+            },
+            feeds: {
+                head: 'Фиды'
+            }
         }
 
 

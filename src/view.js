@@ -1,8 +1,6 @@
 
 const renderError = (error, elements) => {
-
     const errorMessage = error ? error : undefined
-
     if (errorMessage) {
         elements.input.classList.add('is-invalid')
         elements.feedback.textContent = ''
@@ -11,17 +9,17 @@ const renderError = (error, elements) => {
         elements.input.classList.remove('is-invalid')
         elements.feedback.textContent = ''
     }
-
 }
 
-const renderFeeds = (elements, feed) => {
+const renderFeeds = (elements, feed, i18n) => {
+    elements.feeds.textContent = ''
     const cardBorder = document.createElement('div')
     cardBorder.classList.add('card', 'border-0')
     const cardBody = document.createElement('div')
     cardBody.classList.add('card-body')
     const h2 = document.createElement('h2')
     h2.classList.add('card-title', 'h4')
-    h2.textContent = 'Фиды'
+    h2.textContent = `${i18n.t('content.feeds.head')}`
     cardBody.appendChild(h2)
     cardBorder.appendChild(cardBody)
     const ul = document.createElement('ul')
@@ -44,20 +42,20 @@ const renderFeeds = (elements, feed) => {
             ul.appendChild(li)
             elements.feeds.appendChild(cardBorder)
         });
-
     }
-
 }
 
-const renderPosts = (elements, posts) => {
-    const card= document.createElement('div')
+const renderPosts = (elements, posts, i18n) => {
+    console.log(posts)
+    elements.posts.textContent = ''
+    const card = document.createElement('div')
     card.classList.add('card', 'border-0')
 
     const cardBody = document.createElement('div')
     cardBody.classList.add('card-body')
     const h2 = document.createElement('h2')
     h2.classList.add('card-title', 'h4')
-    h2.textContent = 'Посты'
+    h2.textContent = `${i18n.t('content.posts.head')}`
     cardBody.appendChild(h2)
 
     const ul = document.createElement('ul')
@@ -66,33 +64,34 @@ const renderPosts = (elements, posts) => {
     card.appendChild(cardBody)
     card.appendChild(ul)
 
-    if(posts.length !==0) {
+    if (posts.length !== 0) {
         posts.forEach((post) => {
             let li = document.createElement('li')
             li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0')
-            
+
             let a = document.createElement('a')
             a.classList.add('fw-bold')
             a.setAttribute('href', `${post.link}`)
-            a.setAttribute('data-id', `${post.feedId}`)
+            a.setAttribute('data-id', `${post.id}`)
             a.setAttribute('target', '_blank')
             a.textContent = post.title
 
             let button = document.createElement('button')
             button.classList.add('btn', 'btn-outline-primary', 'btn-sm')
-            button.setAttribute('data-id', `${post.feedId}`)
+            button.setAttribute('data-id', `${post.id}`)
             button.setAttribute('data-bs-toogle', 'modal')
             button.setAttribute('data-bs-target', '#modal')
-            button.textContent = 'Просмотр'
+            button.textContent = `${i18n.t('content.posts.buttons')}`
 
             li.appendChild(a)
             li.appendChild(button)
             ul.appendChild(li)
-            
+
         })
         elements.posts.appendChild(card)
     }
 }
+
 const renderProcessState = (elements, process) => {
     switch (process) {
         case 'filling':
@@ -107,6 +106,7 @@ const renderProcessState = (elements, process) => {
 
         case 'error':
             elements.submit.disabled = false
+            elements.input.disabled = false
             break
 
         case 'success':
@@ -119,7 +119,18 @@ const renderProcessState = (elements, process) => {
     }
 }
 
-const initView = (elements) => (path, value) => {
+const renderProcessError = (elements, error) => {
+    const errorMessage = error ? error : undefined
+
+    if (errorMessage) {
+        elements.feedback.textContent = ''
+        elements.feedback.textContent = errorMessage
+    } else if (!errorMessage) {
+        elements.feedback.textContent = ''
+    }
+}
+
+const initView = (elements, i18n) => (path, value) => {
     switch (path) {
         case 'form.error':
             renderError(value, elements)
@@ -128,12 +139,16 @@ const initView = (elements) => (path, value) => {
             renderProcessState(elements, value)
             break
         case 'feeds':
-            renderFeeds(elements, value)
+            renderFeeds(elements, value, i18n)
             break
         case 'posts.allPosts':
-            renderPosts(elements, value)
+            renderPosts(elements, value, i18n)
+            break
+        case 'processState.error':
+            renderProcessError(elements, value)
             break
     }
 }
 
-export default initView
+
+export default initView 
