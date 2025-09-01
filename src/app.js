@@ -47,7 +47,7 @@ const app = () => {
             error: null
         },
         posts: {
-            allPosts: [], //{feedId, id, title, link, description}
+            allPosts: [], //{ id, title, link, description}
             curentPost: {}, //текущий пост
             seenPosts: [] //просмотренные посты id уникальные const set = new Set()
         },
@@ -100,7 +100,6 @@ const app = () => {
                 console.log(error)
                 watchState.processState.status = 'error'
                 watchState.processState.error = `${i18n.t('loadResult.networkError')}`
-                console.log(watchState.processState.error)
             })
 
 

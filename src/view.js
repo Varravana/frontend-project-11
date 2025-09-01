@@ -105,7 +105,6 @@ const renderVisitPosts = (id) => {
 }
 
 const renderModal = (elements, curentPost, i18n) => {
-    console.log(curentPost)
     const modal = elements.modal
 
     const title = modal.querySelector('.modal-title')
