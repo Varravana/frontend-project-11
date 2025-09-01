@@ -28,7 +28,7 @@ const itemCheck = (state, data) => {
         };
     })
 
-    const oldTitles = state.posts.allPosts.forEach((item) => {
+    const oldTitles = state.posts.allPosts.map((item) => {
         item.title
     })
    
