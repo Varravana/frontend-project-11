@@ -5,6 +5,8 @@ const renderError = (error, elements) => {
         elements.input.classList.add('is-invalid')
         elements.feedback.textContent = ''
         elements.feedback.textContent = errorMessage
+        elements.feedback.classList.remove('text-success')
+        elements.feedback.classList.add('text-danger')
     } else if (!errorMessage) {
         elements.input.classList.remove('is-invalid')
         elements.feedback.textContent = ''
@@ -46,7 +48,6 @@ const renderFeeds = (elements, feed, i18n) => {
 }
 
 const renderPosts = (elements, posts, i18n) => {
-    console.log(posts)
     elements.posts.textContent = ''
     const card = document.createElement('div')
     card.classList.add('card', 'border-0')
@@ -74,13 +75,14 @@ const renderPosts = (elements, posts, i18n) => {
             a.setAttribute('href', `${post.link}`)
             a.setAttribute('data-id', `${post.id}`)
             a.setAttribute('target', '_blank')
+            a.setAttribute('rel', 'noopener noreferrer')
             a.textContent = post.title
 
             let button = document.createElement('button')
             button.classList.add('btn', 'btn-outline-primary', 'btn-sm')
             button.setAttribute('data-id', `${post.id}`)
             button.setAttribute('data-bs-toogle', 'modal')
-            button.setAttribute('data-bs-target', '#modal')
+            button.setAttribute('data-bs-target', '#myModal')
             button.textContent = `${i18n.t('content.posts.buttons')}`
 
             li.appendChild(a)
@@ -92,7 +94,37 @@ const renderPosts = (elements, posts, i18n) => {
     }
 }
 
-const renderProcessState = (elements, process) => {
+const renderVisitPosts = (id) => {
+
+    id.forEach((postId) => {
+        let element = document.querySelector(`[data-id="${postId}"]`)
+        element.classList.remove('fw-bold')
+        element.classList.add('fw-normal')
+        element.classList.add('link-secondary')
+    })
+}
+
+const renderModal = (elements, curentPost, i18n) => {
+    console.log(curentPost)
+    const modal = elements.modal
+
+    const title = modal.querySelector('.modal-title')
+    title.textContent = curentPost.title
+
+    const text = modal.querySelector('.modal-body')
+    text.textContent = curentPost.description
+
+    const buttonReadMore = modal.querySelector('.btn-primary')
+    buttonReadMore.innerText = `${i18n.t('modal.readMoreButton')}`
+    buttonReadMore.setAttribute('href', curentPost.link)
+
+
+    const closeButton = modal.querySelector('.btn-secondary')
+    closeButton.textContent = `${i18n.t('modal.closeButton')}`
+
+}
+
+const renderProcessState = (elements, process, i18n) => {
     switch (process) {
         case 'filling':
             elements.input.disabled = false
@@ -112,6 +144,10 @@ const renderProcessState = (elements, process) => {
         case 'success':
             elements.input.disabled = false
             elements.submit.disabled = false
+            elements.feedback.textContent = ''
+            elements.feedback.textContent = `${i18n.t('loadResult.success')}`
+            elements.feedback.classList.remove('text-danger')
+            elements.feedback.classList.add('text-success')
             break
 
         default:
@@ -125,6 +161,8 @@ const renderProcessError = (elements, error) => {
     if (errorMessage) {
         elements.feedback.textContent = ''
         elements.feedback.textContent = errorMessage
+        elements.feedback.classList.remove('text-success')
+        elements.feedback.classList.add('text-danger')
     } else if (!errorMessage) {
         elements.feedback.textContent = ''
     }
@@ -136,7 +174,7 @@ const initView = (elements, i18n) => (path, value) => {
             renderError(value, elements)
             break
         case 'processState.status':
-            renderProcessState(elements, value)
+            renderProcessState(elements, value, i18n)
             break
         case 'feeds':
             renderFeeds(elements, value, i18n)
@@ -146,6 +184,12 @@ const initView = (elements, i18n) => (path, value) => {
             break
         case 'processState.error':
             renderProcessError(elements, value)
+            break
+        case 'posts.seenPosts':
+            renderVisitPosts(value)
+            break
+        case 'posts.curentPost':
+            renderModal(elements, value, i18n)
             break
     }
 }

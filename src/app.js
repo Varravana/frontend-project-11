@@ -6,6 +6,7 @@ import i18next from 'i18next'
 import resources from './locales/index';
 import axios from 'axios';
 import parser from './parser.js'
+import itemCheck from './itemsCheck.js'
 
 
 const duplicateUrlCheck = (list, value) => {
@@ -14,6 +15,8 @@ const duplicateUrlCheck = (list, value) => {
         return true
     } else { return false }
 };
+
+
 
 const app = () => {
     //переводчик
@@ -45,7 +48,7 @@ const app = () => {
         },
         posts: {
             allPosts: [], //{feedId, id, title, link, description}
-            curentPost: '', //id текущий пост
+            curentPost: {}, //текущий пост
             seenPosts: [] //просмотренные посты id уникальные const set = new Set()
         },
         feeds: [],
@@ -67,6 +70,9 @@ const app = () => {
             .url()
             .test("unique", `${i18n.t('form.errors.validation.unique')}`, (value) => {
                 return duplicateUrlCheck(watchState.links, value);
+            })
+            .test("isValidRss", `${i18n.t('form.errors.validation.rssValid')}`, (value) => {
+                return value.includes('feed');
             })
             .required(),
     })
@@ -106,16 +112,46 @@ const app = () => {
         feedback: document.querySelector('.feedback'),
         form: document.querySelector('.rss-form'),
         posts: document.querySelector('.posts'),
-        feeds: document.querySelector('.feeds')
+        feeds: document.querySelector('.feeds'),
+        modal: document.querySelector('#myModal')
     }
 
     const watchState = onChange(state, initView(elements, i18n))
+
+    //проверка раз в 5 секунд
+    const repeatTask = () => {
+        if (watchState.links.length !== 0) {
+            watchState.links.forEach((link) => {
+                itemCheck(watchState, link)
+            })
+        }
+        setTimeout(repeatTask, 5000);
+    }
+    repeatTask()
 
     //события
     elements.input.addEventListener('input', (e) => {
         watchState.processState.status = 'filling'
         const value = e.target.value
         watchState.form.field.value = value
+    })
+
+    elements.posts.addEventListener('click', (e) => {
+        if (e.target.hasAttribute('data-id')) {
+            const id = e.target.getAttribute('data-id')
+            if (!watchState.posts.seenPosts.includes(id)) {
+                watchState.posts.seenPosts.push(id);
+            }
+            if (e.target.hasAttribute('data-bs-toogle')) {
+                const index = watchState.posts.allPosts.findIndex((post) => post.id === id)
+                if (index !== -1) {
+                    watchState.posts.curentPost = watchState.posts.allPosts[index]
+                }
+                const modalWindow = new bootstrap.Modal(elements.modal)
+                modalWindow.show()
+            }
+        }
+
     })
 
     elements.form.addEventListener('submit', (e) => {

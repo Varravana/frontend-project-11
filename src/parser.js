@@ -7,12 +7,11 @@ const parser = (data) => {
   const cleanTitle = feedTitle.replace(/<!\[CDATA\[(.*?)\]\]>/gs, '$1')
   const feedDescriptionBlock = doc.querySelector('channel > description')
   let feedDescription = ''
-  if(!feedDescriptionBlock ) {
-feedDescription = ''
+  if (!feedDescriptionBlock) {
+    feedDescription = ''
   } else {
-feedDescription = feedDescriptionBlock.innerHTML? feedDescriptionBlock.innerHTML : feedDescriptionBlock.textContent
+    feedDescription = feedDescriptionBlock.innerHTML ? feedDescriptionBlock.innerHTML : feedDescriptionBlock.textContent
   }
-
   const cleanDescription = feedDescription.replace('\x3C!--[CDATA[', '').replace(']]-->', '');
   const feedId = _.uniqueId()
   const feedInfo = { id: feedId, title: cleanTitle, description: cleanDescription }
@@ -34,7 +33,7 @@ feedDescription = feedDescriptionBlock.innerHTML? feedDescriptionBlock.innerHTML
     const cleanDescription = description.replace('\x3C!--[CDATA[', '').replace(']]-->', '').trim();
 
     return {
-      feedId: feedId,
+      //feedId: feedId,
       id: itemId,
       title: cleanTitle,
       link: cleanLink,
