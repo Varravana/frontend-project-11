@@ -23,4 +23,5 @@ node_modules
 *.sw?
 .vercel
 delete.txt
+/home/varravana/frontend-project-11/delete.txt
 
