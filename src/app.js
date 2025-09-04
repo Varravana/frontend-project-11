@@ -87,7 +87,12 @@ const app = () => {
     const loadData = (url) => {
         watchState.processState.status = 'sending'
         watchState.form.field.value = ''
-        axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(url)}`)
+        axios.get(`https://allorigins.hexlet.app/raw?url=${encodeURIComponent(url)}`, 
+    {
+        maxAge: 0,
+        credentials: 'same-origin',
+        cache: false
+    })
             .then((response) => {
                 watchState.processState.error = null
                 const htmlData = response.data;
