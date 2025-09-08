@@ -95,11 +95,12 @@ const app = () => {
         }
         const newUrl = addProxy()
         axios.get(newUrl)
-            //axios.get(`https://allorigins.hexlet.app/raw?url=${encodeURIComponent(url)}`,) 
+            //axios.get(`https://allorigins.hexlet.app/raw?url=${encodeURIComponent(rssLink)}`,) 
 
             .then((response) => {
                 watchState.processState.error = null
-                const htmlData = response.data;
+                const htmlData = response.data.contents;
+                console.log(htmlData)
                 const result = parser(htmlData)
                 watchState.processState.status = 'success'
                 watchState.feeds.push(result.feed)
