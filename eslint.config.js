@@ -7,14 +7,14 @@ export default defineConfig([
     plugins: { js },
     extends: ['js/recommended'],
     languageOptions: { ecmaVersion: 2022,
-	  sourceType: 'module',
+      sourceType: 'module',
       globals: {
         ...globals.browser,
         ...globals.node,
         myCustomGlobal: 'readonly',
         bootstrap: 'readonly',
+      },
     },
-        },
   },
   globalIgnores(['dist']),
 ])

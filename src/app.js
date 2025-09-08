@@ -12,7 +12,8 @@ const duplicateUrlCheck = (list, value) => {
   const result = _.includes(list, value)
   if (result === false) {
     return true
-  } else {
+  }
+  else {
     return false
   }
 }
@@ -20,7 +21,8 @@ const duplicateUrlCheck = (list, value) => {
 const isValidRss = (value) => {
   if (value.includes('feed') || value.includes('rss')) {
     return true
-  } else {
+  }
+  else {
     return false
   }
 }
@@ -110,7 +112,7 @@ const app = () => {
         watchState.feeds.push(result.feed)
         watchState.posts.allPosts = [...watchState.posts.allPosts, ...result.items]
       })
-      .catch((error )=> {
+      .catch((error) => {
         console.log(error)
         watchState.processState.status = 'error'
         watchState.processState.error = `${i18n.t('loadResult.networkError')}`
@@ -159,7 +161,7 @@ const app = () => {
         }
         const modalWindow = new bootstrap.Modal(elements.modal)
         modalWindow.show()
-    }
+      }
     }
   })
 
@@ -183,7 +185,7 @@ const app = () => {
           }
           else { watchState.form.error = `${i18n.t('form.errors.validation.rssValid')}` }
         }
-        })
+      })
   })
 }
 export { app }
