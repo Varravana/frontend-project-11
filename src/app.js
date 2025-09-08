@@ -84,15 +84,18 @@ const app = () => {
     }
     // загрузка данных
 
-    const loadData = (url) => {
-        let newUrl = new URL('https://allorigins.hexlet.app/get')
-        const qqq = encodeURIComponent(url)
-            newUrl.searchParams.set('url',  qqq)
-            newUrl.searchParams.set('disableCache', 'true')
+    const loadData = (rssLink) => {
         watchState.processState.status = 'sending'
         watchState.form.field.value = ''
+        const addProxy = () => {
+            const urlWithProxy = new URL('/get', 'https://allorigins.hexlet.app');
+            urlWithProxy.searchParams.set('url', rssLink);
+            urlWithProxy.searchParams.set('disableCache', 'true')
+            return urlWithProxy.toString()
+        }
+        const newUrl = addProxy()
         axios.get(newUrl)
-        //axios.get(`https://allorigins.hexlet.app/raw?url=${encodeURIComponent(url)}`,) 
+            //axios.get(`https://allorigins.hexlet.app/raw?url=${encodeURIComponent(url)}`,) 
 
             .then((response) => {
                 watchState.processState.error = null
