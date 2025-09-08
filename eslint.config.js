@@ -17,5 +17,5 @@ export default defineConfig([
 		}, 
 
  },
- globalIgnores(['dist']),
+ globalIgnores(['dist', 'eslint.config.js']),
 ]);
