@@ -16,6 +16,12 @@ const duplicateUrlCheck = (list, value) => {
     } else { return false }
 };
 
+const isValidRss = (value) => {
+    if (value.includes('feed') || value.includes('rss')) {
+        return true
+    } else {return false}
+}
+
 
 
 const app = () => {
@@ -71,9 +77,9 @@ const app = () => {
             .test("unique", `${i18n.t('form.errors.validation.unique')}`, (value) => {
                 return duplicateUrlCheck(watchState.links, value);
             })
-            .test("isValidRss", `${i18n.t('form.errors.validation.rssValid')}`, (value) => {
-                return value.includes('feed');
-            })
+     //       .test("isValidRss", `${i18n.t('form.errors.validation.rssValid')}`, (value) => {
+     //           return value.includes('feed');
+      //      })
             .required(),
     })
 
@@ -100,7 +106,6 @@ const app = () => {
             .then((response) => {
                 watchState.processState.error = null
                 const htmlData = response.data.contents;
-                console.log(htmlData)
                 const result = parser(htmlData)
                 watchState.processState.status = 'success'
                 watchState.feeds.push(result.feed)
@@ -173,13 +178,15 @@ const app = () => {
                     watchState.form.isValid = false
                     watchState.processState.status = 'filling'
                 } else {
-                    watchState.links.push(url)
+                    if (isValidRss(watchState.form.field.value))
+                   { watchState.links.push(url)
                     watchState.form.isValid = true
                     elements.input.value = ''
                     watchState.processState.status = 'sending'
-                    loadData(url)
+                    loadData(url)} else {watchState.form.error = `${i18n.t('form.errors.validation.rssValid')}`}
 
                 }
+                
             })
     });
 
