@@ -6,7 +6,7 @@ const itemCheck = (state, data) => {
   const items = doc.querySelectorAll('item')
 
   const parsedItems = Array.from(items).map((item) => {
-    const itemId = _.uniqueId();
+    const itemId = _.uniqueId()
     let titleElement = item.querySelector('title')
     let linkElement = item.querySelector('guid')
     let descriptionElement = item.querySelector('description')
@@ -31,10 +31,10 @@ const itemCheck = (state, data) => {
   })
 
   parsedItems.forEach((item) => {
-    const isAdded= _.includes(oldTitles, item.title)
-      if (!isAdded) {
-        state.posts.allPosts.push(item)
-      }
+    const isAdded = _.includes(oldTitles, item.title)
+    if (!isAdded) {
+    state.posts.allPosts.push(item)
+    }
   })
 }
 
