@@ -6,7 +6,7 @@ export default {
     },
     modal: {
       closeButton: 'Закрыть',
-      readMoreButton: 'Читать полностью',       
+      readMoreButton: 'Читать полностью',
     },
     form: {
       inputLabel: 'Ссылка RSS',
@@ -34,5 +34,5 @@ export default {
       },
     },
 
-    },
+  },
 }

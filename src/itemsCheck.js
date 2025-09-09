@@ -33,7 +33,7 @@ const itemCheck = (state, data) => {
   parsedItems.forEach((item) => {
     const isAdded = _.includes(oldTitles, item.title)
     if (!isAdded) {
-    state.posts.allPosts.push(item)
+      state.posts.allPosts.push(item)
     }
   })
 }

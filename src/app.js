@@ -7,6 +7,7 @@ import resources from './locales/index'
 import axios from 'axios'
 import parser from './parser.js'
 import itemCheck from './itemsCheck.js'
+import * as bootstrap from 'bootstrap';
 
 const duplicateUrlCheck = (list, value) => {
   const result = _.includes(list, value)
