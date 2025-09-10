@@ -70,7 +70,6 @@ const app = () => {
     string: {
       required: `${i18n.t('form.errors.validation.required')}`,
       url: `${i18n.t('form.errors.validation.url')}`,
-      // unique: `${i18n.t('form.errors.validation.unique')}`
     },
   })
 
@@ -81,9 +80,6 @@ const app = () => {
       .test('unique', `${i18n.t('form.errors.validation.unique')}`, (value) => {
         return duplicateUrlCheck(watchState.links, value)
       })
-    //       .test("isValidRss", `${i18n.t('form.errors.validation.rssValid')}`, (value) => {
-    //           return value.includes('feed');
-    //      })
       .required(),
   })
 

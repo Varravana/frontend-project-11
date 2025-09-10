@@ -3,8 +3,8 @@ import _ from 'lodash'
 const parser = (data) => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(data, 'text/html')
-  const feedTitle = doc.title
-  const cleanTitle = feedTitle.replace(/<!\[CDATA\[(.*?)\]\]>/gs, '$1')
+  const feedTitle = doc.querySelector('channel > title') 
+  const cleanTitle = feedTitle.textContent.replace(/<!\[CDATA\[(.*?)\]\]>/gs, '$1')
   const feedDescriptionBlock = doc.querySelector('channel > description')
   let feedDescription = ''
   if (!feedDescriptionBlock) {
@@ -34,7 +34,6 @@ const parser = (data) => {
     const cleanDescription = description.replace('\x3C!--[CDATA[', '').replace(']]-->', '').trim()
 
     return {
-      // feedId: feedId,
       id: itemId,
       title: cleanTitle,
       link: cleanLink,

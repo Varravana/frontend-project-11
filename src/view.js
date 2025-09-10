@@ -7,7 +7,7 @@ const renderError = (error, elements) => {
     elements.feedback.classList.remove('text-success')
     elements.feedback.classList.add('text-danger')
   }
-  else if (!errorMessage) {
+  else {
     elements.input.classList.remove('is-invalid')
     elements.feedback.textContent = ''
   }
