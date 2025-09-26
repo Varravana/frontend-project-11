@@ -6,7 +6,6 @@ import i18next from 'i18next'
 import resources from './locales/index'
 import axios from 'axios'
 import parser from './parser.js'
-import itemCheck from './itemsCheck.js'
 import * as bootstrap from 'bootstrap'
 
 const duplicateUrlCheck = (list, value) => {
@@ -89,17 +88,17 @@ const app = () => {
       .catch(e => e.message)
   }
   // загрузка данных
-
-  const loadData = (rssLink) => {
-    watchState.processState.status = 'sending'
-    watchState.form.field.value = ''
-    const addProxy = () => {
+   const addProxy = (rssLink) => {
       const urlWithProxy = new URL('/get', 'https://allorigins.hexlet.app')
       urlWithProxy.searchParams.set('url', rssLink)
       urlWithProxy.searchParams.set('disableCache', 'true')
       return urlWithProxy.toString()
     }
-    const newUrl = addProxy()
+
+  const loadData = (rssLink) => {
+    watchState.processState.status = 'sending'
+    watchState.form.field.value = ''
+    const newUrl = addProxy(rssLink)
     axios.get(newUrl)
       .then((response) => {
         watchState.processState.error = null
@@ -132,7 +131,22 @@ const app = () => {
   const repeatTask = () => {
     if (watchState.links.length !== 0) {
       watchState.links.forEach((link) => {
-        itemCheck(watchState, link)
+      const newUrl= addProxy(link)
+        axios.get(newUrl)
+        .then ((response) => {
+          const htmlData = response.data.contents
+        const result = parser(htmlData)
+        const newItems = result.items
+          const oldTitles = watchState.posts.allPosts.map((item) => {
+       item.title
+      })
+            newItems.forEach((item) => {
+        const isAdded = _.includes(oldTitles, item.title)
+        if (!isAdded) {
+          watchState.posts.allPosts.push(item)
+        }
+      })
+        }) 
       })
     }
     setTimeout(repeatTask, 5000)
@@ -174,10 +188,10 @@ const app = () => {
         }
         else {
           if (isValidRss(watchState.form.field.value)) {
-            watchState.links.push(url)
             watchState.form.isValid = true
             elements.input.value = ''
             watchState.processState.status = 'sending'
+            watchState.links.push(url)
             loadData(url)
           }
           else { watchState.form.error = `${i18n.t('form.errors.validation.rssValid')}` }
