@@ -88,12 +88,12 @@ const app = () => {
       .catch(e => e.message)
   }
   // загрузка данных
-   const addProxy = (rssLink) => {
-      const urlWithProxy = new URL('/get', 'https://allorigins.hexlet.app')
-      urlWithProxy.searchParams.set('url', rssLink)
-      urlWithProxy.searchParams.set('disableCache', 'true')
-      return urlWithProxy.toString()
-    }
+  const addProxy = (rssLink) => {
+    const urlWithProxy = new URL('/get', 'https://allorigins.hexlet.app')
+    urlWithProxy.searchParams.set('url', rssLink)
+    urlWithProxy.searchParams.set('disableCache', 'true')
+    return urlWithProxy.toString()
+  }
 
   const loadData = (rssLink) => {
     watchState.processState.status = 'sending'
@@ -131,22 +131,22 @@ const app = () => {
   const repeatTask = () => {
     if (watchState.links.length !== 0) {
       watchState.links.forEach((link) => {
-      const newUrl= addProxy(link)
+        const newUrl = addProxy(link)
         axios.get(newUrl)
-        .then ((response) => {
-          const htmlData = response.data.contents
-        const result = parser(htmlData)
-        const newItems = result.items
-          const oldTitles = watchState.posts.allPosts.map((item) => {
-       item.title
-      })
+          .then ((response) => {
+            const htmlData = response.data.contents
+            const result = parser(htmlData)
+            const newItems = result.items
+            const oldTitles = watchState.posts.allPosts.map((item) => {
+              item.title
+            })
             newItems.forEach((item) => {
-        const isAdded = _.includes(oldTitles, item.title)
-        if (!isAdded) {
-          watchState.posts.allPosts.push(item)
-        }
-      })
-        }) 
+              const isAdded = _.includes(oldTitles, item.title)
+              if (!isAdded) {
+                watchState.posts.allPosts.push(item)
+              }
+            })
+          })
       })
     }
     setTimeout(repeatTask, 5000)
